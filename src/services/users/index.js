@@ -16,6 +16,25 @@ playersRouter.post("/register", async (req, res, next) => {
     }
   })
 
+ playersRouter.post("/login", async (req, res, next) => {
+    try {
+      const { email, password} = req.body
+  
+      const player = await PlayersModel.checkCredentials(email, (password))
+  
+      if (player) {
+  
+        const accessToken = await generateAccessToken({ _id: player._id, role: player.role })
+  
+        res.send({ accessToken })
+      } else {
+        next(createError(401, `Credentials are not ok!`))
+      }
+    } catch (error) {
+      next(error)
+    }
+  })
+
   playersRouter.get("/me", JWTAuthMiddleware, async (req, res, next) => {
     try {
       const player = await PlayersModel.findById(req.user._id)
@@ -37,6 +56,17 @@ playersRouter.post("/register", async (req, res, next) => {
       } else {
         next(createError(404, `Player with id ${req.params.id} not found!`))
       }
+    } catch (error) {
+      next(error)
+    }
+  })
+
+  playersRouter.put("/me", JWTAuthMiddleware, async (req, res, next) => {
+    try {
+
+      const updatedPlayer = await PlayersModel.findByIdAndUpdate(req.user._id, req.body, { new: true, runValidators: true })
+
+        res.send(updatedPlayer)
     } catch (error) {
       next(error)
     }
