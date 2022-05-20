@@ -6,6 +6,7 @@ import { JWTAuthMiddleware } from "../../auth/JWTMiddleware.js"
 import multer from "multer";
 import { v2 as cloudinary } from "cloudinary";
 import { CloudinaryStorage } from "multer-storage-cloudinary";
+import q2m from "query-to-mongo";
 
 const playersRouter = express.Router()
 
@@ -50,7 +51,13 @@ playersRouter.post("/register", async (req, res, next) => {
 
 playersRouter.get("/", JWTAuthMiddleware, async (req, res, next) => {
     try {
-      const players = await PlayersModel.find()
+      const mongoQuery = q2m(req.query);
+      const players = await PlayersModel.find({ $or:[
+        { name:  {$regex: mongoQuery.criteria.name, $options: "ig"}},
+         { country: {$regex: mongoQuery.criteria.country|"", $options: "ig"}},
+        { club:mongoQuery.criteria.club}
+       
+       ]})
       res.send(players)
     } catch (error) {
       next(error)
