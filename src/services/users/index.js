@@ -3,8 +3,20 @@ import PlayersModel from "./playersModel.js"
 import createError from "http-errors"
 import { generateAccessToken } from "../../auth/tools.js"
 import { JWTAuthMiddleware } from "../../auth/JWTMiddleware.js"
+import multer from "multer";
+import { v2 as cloudinary } from "cloudinary";
+import { CloudinaryStorage } from "multer-storage-cloudinary";
 
 const playersRouter = express.Router()
+
+const cloudinaryUploader = multer({
+    storage: new CloudinaryStorage({
+      cloudinary, 
+      params: {
+        folder: "Unique-players",
+      }, limits: { fileSize: 3145728 }
+    }),
+  }).single("image");
 
 playersRouter.post("/register", async (req, res, next) => {
     try {
@@ -98,6 +110,25 @@ playersRouter.get("/", JWTAuthMiddleware, async (req, res, next) => {
       next(error)
     }
   })
+
+  playersRouter.put("/imageUpload", JWTAuthMiddleware, cloudinaryUploader, async (req, res, next) => {
+    try {
+      const player = await PlayersModel.findByIdAndUpdate(
+        req.user._id,
+        { image: req.file.path },
+        { new: true }
+      );
+  
+      if (player) {
+        res.send("Uploaded on Cloudinary!");
+      } else {
+        next(createError(404, `Player with id ${req.user._id} not found!`));
+      }
+    } catch (error) {
+      next(error);
+    }
+  }
+  );
 
   playersRouter.delete("/me", JWTAuthMiddleware, async (req, res, next) => {
     try {
