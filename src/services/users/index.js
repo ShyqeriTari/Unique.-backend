@@ -36,6 +36,28 @@ playersRouter.post("/register", async (req, res, next) => {
     }
   })
 
+playersRouter.get("/", JWTAuthMiddleware, async (req, res, next) => {
+    try {
+      const players = await PlayersModel.find()
+      res.send(players)
+    } catch (error) {
+      next(error)
+    }
+  })
+
+  playersRouter.get("/me", JWTAuthMiddleware, async (req, res, next) => {
+    try {
+      const player = await PlayersModel.findById(req.user._id)
+      if (player) {
+        res.send(player)
+      } else {
+        next(createError(401, `Player with id ${req.user._id} not found!`))
+      }
+    } catch (error) {
+      next(error)
+    }
+  })
+
   playersRouter.get("/me", JWTAuthMiddleware, async (req, res, next) => {
     try {
       const player = await PlayersModel.findById(req.user._id)
