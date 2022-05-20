@@ -1,5 +1,6 @@
 import express from "express"
 import PlayersModel from "./playersModel.js"
+import createError from "http-errors"
 import { generateAccessToken } from "../../auth/tools.js"
 import { JWTAuthMiddleware } from "../../auth/JWTMiddleware.js"
 
@@ -41,7 +42,7 @@ playersRouter.post("/register", async (req, res, next) => {
       if (player) {
         res.send(player)
       } else {
-        next(401, `Player with id ${req.user._id} not found!`)
+        next(createError(401, `Player with id ${req.user._id} not found!`))
       }
     } catch (error) {
       next(error)
@@ -65,8 +66,22 @@ playersRouter.post("/register", async (req, res, next) => {
     try {
 
       const updatedPlayer = await PlayersModel.findByIdAndUpdate(req.user._id, req.body, { new: true, runValidators: true })
+      if(updatedPlayer){
 
         res.send(updatedPlayer)
+    }else{
+        next(createError(404, `Player with id ${req.user._id} not found!`))
+    }
+    } catch (error) {
+      next(error)
+    }
+  })
+
+  playersRouter.delete("/me", JWTAuthMiddleware, async (req, res, next) => {
+    try {
+        const deletedPlayer = await PlayersModel.findByIdAndDelete(req.user._id)
+
+        res.status(204).send()
     } catch (error) {
       next(error)
     }
