@@ -1,7 +1,8 @@
 import express from "express";
 import mongoose from "mongoose";
 import listEndpoints from "express-list-endpoints";
-import playersRouter from "./services/users/index.js"
+import playersRouter from "./services/users/players/index.js"
+import clubsRouter from "./services/users/clubs/index.js"
 import cors from "cors";
 import {
     badRequestHandler,
@@ -21,6 +22,7 @@ server.use(express.json());
 //***********************************Endpoints*********************************************************/
 
 server.use("/player", playersRouter)
+server.use("/club", clubsRouter)
 
 //***********************************Error handlers****************************************************/
 server.use(badRequestHandler);

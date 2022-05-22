@@ -1,8 +1,8 @@
 import express from "express"
-import PlayersModel from "./playersModel.js"
+import PlayersModel from "./model.js"
 import createError from "http-errors"
-import { generateAccessToken } from "../../auth/tools.js"
-import { JWTAuthMiddleware } from "../../auth/JWTMiddleware.js"
+import { generateAccessToken } from "../../../auth/tools.js"
+import { JWTAuthMiddleware } from "../../../auth/JWTMiddleware.js"
 import multer from "multer";
 import { v2 as cloudinary } from "cloudinary";
 import { CloudinaryStorage } from "multer-storage-cloudinary";
