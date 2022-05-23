@@ -3,6 +3,7 @@ import mongoose from "mongoose";
 import listEndpoints from "express-list-endpoints";
 import playersRouter from "./services/users/players/index.js"
 import clubsRouter from "./services/users/clubs/index.js"
+import fansRouter from "./services/users/fans/index.js"
 import cors from "cors";
 import {
     badRequestHandler,
@@ -23,6 +24,7 @@ server.use(express.json());
 
 server.use("/player", playersRouter)
 server.use("/club", clubsRouter)
+server.use("/fan", fansRouter)
 
 //***********************************Error handlers****************************************************/
 server.use(badRequestHandler);

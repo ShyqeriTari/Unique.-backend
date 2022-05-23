@@ -1,5 +1,5 @@
 import express from "express"
-import PlayersModel from "./model.js"
+import FansModel from "./model.js"
 import createError from "http-errors"
 import { generateAccessToken } from "../../../auth/tools.js"
 import { JWTAuthMiddleware } from "../../../auth/JWTMiddleware.js"
@@ -8,21 +8,21 @@ import { v2 as cloudinary } from "cloudinary";
 import { CloudinaryStorage } from "multer-storage-cloudinary";
 import q2m from "query-to-mongo";
 
-const playersRouter = express.Router()
+const fansRouter = express.Router()
 
 const cloudinaryUploader = multer({
     storage: new CloudinaryStorage({
       cloudinary, 
       params: {
-        folder: "Unique-players",
+        folder: "Unique-fans",
       }, limits: { fileSize: 3145728 }
     }),
   }).single("image");
 
-playersRouter.post("/register", async (req, res, next) => {
+fansRouter.post("/register", async (req, res, next) => {
     try {
-      const newPlayer = new PlayersModel(req.body)
-      const { _id, role } = await newPlayer.save()
+      const newFan = new FansModel(req.body)
+      const { _id, role } = await newFan.save()
       const accessToken = await generateAccessToken({ _id: _id, role: role })
       res.status(201).send({ _id, accessToken })
     } catch (error) {
@@ -30,15 +30,15 @@ playersRouter.post("/register", async (req, res, next) => {
     }
   })
 
- playersRouter.post("/login", async (req, res, next) => {
+fansRouter.post("/login", async (req, res, next) => {
     try {
       const { email, password} = req.body
   
-      const player = await PlayersModel.checkCredentials(email, (password))
+      const fan = await FansModel.checkCredentials(email, (password))
   
-      if (player) {
+      if (fan) {
   
-        const accessToken = await generateAccessToken({ _id: player._id, role: player.role })
+        const accessToken = await generateAccessToken({ _id: fan._id, role: fan.role })
   
         res.send({ accessToken })
       } else {
@@ -49,87 +49,48 @@ playersRouter.post("/register", async (req, res, next) => {
     }
   })
 
-playersRouter.get("/", JWTAuthMiddleware, async (req, res, next) => {
-    try {
-      const mongoQuery = q2m(req.query);
-      const players = await PlayersModel.find({ $or:[
-        { name:  {$regex: mongoQuery.criteria.name, $options: "ig"}},
-         { country: {$regex: mongoQuery.criteria.country|"", $options: "ig"}},
-        { club:mongoQuery.criteria.club}
-       
-       ]})
-      res.send(players)
-    } catch (error) {
-      next(error)
-    }
-  })
 
-  playersRouter.get("/me", JWTAuthMiddleware, async (req, res, next) => {
+fansRouter.get("/me", JWTAuthMiddleware, async (req, res, next) => {
     try {
-      const player = await PlayersModel.findById(req.user._id)
-      if (player) {
-        res.send(player)
+      const fan = await FansModel.findById(req.user._id)
+      if (fan) {
+        res.send(fan)
       } else {
-        next(createError(401, `Player with id ${req.user._id} not found!`))
+        next(createError(401, `User with id ${req.user._id} not found!`))
       }
     } catch (error) {
       next(error)
     }
   })
 
-  playersRouter.get("/me", JWTAuthMiddleware, async (req, res, next) => {
-    try {
-      const player = await PlayersModel.findById(req.user._id)
-      if (player) {
-        res.send(player)
-      } else {
-        next(createError(401, `Player with id ${req.user._id} not found!`))
-      }
-    } catch (error) {
-      next(error)
-    }
-  })
 
-  playersRouter.get("/:id", JWTAuthMiddleware, async (req, res, next) => {
-    try {
-      const player = await PlayersModel.findById(req.params.id)
-      if (player) {
-        res.send(player)
-      } else {
-        next(createError(404, `Player with id ${req.params.id} not found!`))
-      }
-    } catch (error) {
-      next(error)
-    }
-  })
-
-  playersRouter.put("/me", JWTAuthMiddleware, async (req, res, next) => {
+fansRouter.put("/me", JWTAuthMiddleware, async (req, res, next) => {
     try {
 
-      const updatedPlayer = await PlayersModel.findByIdAndUpdate(req.user._id, req.body, { new: true, runValidators: true })
-      if(updatedPlayer){
+      const updatedFan = await FansModel.findByIdAndUpdate(req.user._id, req.body, { new: true, runValidators: true })
+      if(updatedFan){
 
-        res.send(updatedPlayer)
+        res.send(updatedFan)
     }else{
-        next(createError(404, `Player with id ${req.user._id} not found!`))
+        next(createError(404, `User with id ${req.user._id} not found!`))
     }
     } catch (error) {
       next(error)
     }
   })
 
-  playersRouter.put("/imageUpload", JWTAuthMiddleware, cloudinaryUploader, async (req, res, next) => {
+fansRouter.put("/imageUpload", JWTAuthMiddleware, cloudinaryUploader, async (req, res, next) => {
     try {
-      const player = await PlayersModel.findByIdAndUpdate(
+      const fan = await FansModel.findByIdAndUpdate(
         req.user._id,
         { image: req.file.path },
         { new: true }
       );
   
-      if (player) {
+      if (fan) {
         res.send("Uploaded on Cloudinary!");
       } else {
-        next(createError(404, `Player with id ${req.user._id} not found!`));
+        next(createError(404, `User with id ${req.user._id} not found!`));
       }
     } catch (error) {
       next(error);
@@ -137,9 +98,9 @@ playersRouter.get("/", JWTAuthMiddleware, async (req, res, next) => {
   }
   );
 
-  playersRouter.delete("/me", JWTAuthMiddleware, async (req, res, next) => {
+fansRouter.delete("/me", JWTAuthMiddleware, async (req, res, next) => {
     try {
-        const deletedPlayer = await PlayersModel.findByIdAndDelete(req.user._id)
+        const deletedFan = await FansModel.findByIdAndDelete(req.user._id)
 
         res.status(204).send()
     } catch (error) {
@@ -147,4 +108,4 @@ playersRouter.get("/", JWTAuthMiddleware, async (req, res, next) => {
     }
   })
 
-  export default playersRouter
+  export default fansRouter

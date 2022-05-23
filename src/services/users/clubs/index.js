@@ -153,4 +153,22 @@ clubsRouter.delete("/me", JWTAuthMiddleware, async (req, res, next) => {
     }
   })
 
+  clubsRouter.delete("/removePlayer", JWTAuthMiddleware, async (req, res, next) => {
+    try {
+
+        const updatePlayers = await ClubsModel.findByIdAndUpdate(
+            req.user._id,
+
+            { $pull: { players: req.body.player }}
+
+        )
+
+      res.status(204).send()
+
+    } catch (error) {
+      next(error);
+      console.log(error);
+    }
+  });
+
   export default clubsRouter

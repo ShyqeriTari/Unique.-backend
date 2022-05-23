@@ -15,8 +15,7 @@ const UserSchema = new Schema(
     password: { type: String },
     birthdate: { type: String, required: true },
     image: { type: String, default: "https://res.cloudinary.com/dkk6ghj7m/image/upload/v1653052039/logo_rybcee.png"},
-    country: { type: String, required: true },
-    role: {type: String, enum:["fan", "player", "club"], default: "fan"}
+    country: { type: String, required: true }
     
   },
   { timestamps: true }, baseOptions,
