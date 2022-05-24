@@ -11,6 +11,7 @@ const PlayerSchema = baseModel.discriminator("Player", new Schema({
     def: { type: Number, default: 0 },
     phy: { type: Number, default: 0 },
     club: { type: Schema.Types.ObjectId, ref: 'Club'},
+    position: {type: String}
     // like: [{type: Schema.Types.ObjectId, ref: ['Club', 'Player', 'Fan']}]
 }))
 
