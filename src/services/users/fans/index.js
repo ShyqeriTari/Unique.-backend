@@ -49,6 +49,36 @@ fansRouter.post("/login", async (req, res, next) => {
     }
   })
 
+  fansRouter.post("/addPlayer", JWTAuthMiddleware, async (req, res, next) => {
+    try {
+  
+        const updateFan = await FansModel.findByIdAndUpdate(
+          req.user._id ,
+          { $push: { favPlayers: req.body.player }}
+      )
+  
+      res.status(200).send()
+    } catch (error) {
+      console.log(error);
+      next(error);
+    }
+  });
+
+  fansRouter.post("/addClub", JWTAuthMiddleware, async (req, res, next) => {
+    try {
+  
+        const updateFan = await FansModel.findByIdAndUpdate(
+          req.user._id ,
+          { $push: { favClubs: req.body.club }}
+      )
+  
+      res.status(200).send()
+    } catch (error) {
+      console.log(error);
+      next(error);
+    }
+  });
+
 
 fansRouter.get("/me", JWTAuthMiddleware, async (req, res, next) => {
     try {
@@ -107,5 +137,41 @@ fansRouter.delete("/me", JWTAuthMiddleware, async (req, res, next) => {
       next(error)
     }
   })
+
+  fansRouter.delete("/removePlayer", JWTAuthMiddleware, async (req, res, next) => {
+    try {
+
+        const updateFan = await FansModel.findByIdAndUpdate(
+            req.user._id,
+
+            { $pull: { favPlayers: req.body.player }}
+
+        )
+
+      res.status(204).send()
+
+    } catch (error) {
+      next(error);
+      console.log(error);
+    }
+  });
+
+  fansRouter.delete("/removeClub", JWTAuthMiddleware, async (req, res, next) => {
+    try {
+
+        const updateFan = await FansModel.findByIdAndUpdate(
+            req.user._id,
+
+            { $pull: { favClubs: req.body.club }}
+
+        )
+
+      res.status(204).send()
+
+    } catch (error) {
+      next(error);
+      console.log(error);
+    }
+  });
 
   export default fansRouter
