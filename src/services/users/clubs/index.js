@@ -85,7 +85,7 @@ clubsRouter.get("/", JWTAuthMiddleware, async (req, res, next) => {
 
 clubsRouter.get("/me", JWTAuthMiddleware, async (req, res, next) => {
     try {
-      const club = await ClubsModel.findById(req.user._id).populate({path:"players"})
+      const club = await ClubsModel.findById(req.user._id).populate({path:"players", populate: {path: "club"}})
       if (club) {
         res.send(club)
       } else {
