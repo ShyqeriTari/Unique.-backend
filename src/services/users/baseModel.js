@@ -23,7 +23,8 @@ const UserSchema = new Schema(
   ], required: true },
     
   },
-  { timestamps: true }, baseOptions,
+  { timestamps: true }, 
+ 
 )
 
 UserSchema.pre("save", async function (next) {
