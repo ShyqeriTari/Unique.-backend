@@ -91,27 +91,27 @@ playersRouter.get("/", JWTAuthMiddleware, async (req, res, next) => {
         {birthdate: mongoQuery.criteria.birthdate},
         
        ]}
-       )
+       ).populate({path:"club", select: "name country"})
       res.send(players)
     } else if(!mongoQuery.criteria.position && !mongoQuery.criteria.country && !mongoQuery.criteria.birthdate && mongoQuery.criteria.name){
       const players = await PlayersModel.find(
         {name: mongoQuery.criteria.name},
-       )
+       ).populate({path:"club", select: "name country"})
       res.send(players)
       } else if( !mongoQuery.criteria.position && !mongoQuery.criteria.name && !mongoQuery.criteria.birthdate && mongoQuery.criteria.country){
         const players = await PlayersModel.find(
           {country: mongoQuery.criteria.country},
-         )
+         ).populate({path:"club", select: "name country"})
         res.send(players)
         } else if(!mongoQuery.criteria.name && !mongoQuery.criteria.country && !mongoQuery.criteria.birthdate && mongoQuery.criteria.position){
           const players = await PlayersModel.find(
             {position: mongoQuery.criteria.position},
-           )
+           ).populate({path:"club", select: "name country"})
           res.send(players)
           } else if(!mongoQuery.criteria.position && !mongoQuery.criteria.country && !mongoQuery.criteria.name &&mongoQuery.criteria.birthdate){
             const players = await PlayersModel.find(
               {birthdate: mongoQuery.criteria.birthdate},
-             )
+             ).populate({path:"club", select: "name country"})
             res.send(players)
             } else  if(mongoQuery.criteria.name &&  mongoQuery.criteria.position && !mongoQuery.criteria.country && !mongoQuery.criteria.birthdate){
               const players = await PlayersModel.find({ $and: [
@@ -119,14 +119,14 @@ playersRouter.get("/", JWTAuthMiddleware, async (req, res, next) => {
                 {position: mongoQuery.criteria.position},
                 
                ]}
-               )
+               ).populate({path:"club", select: "name country"})
               res.send(players)
             } else  if(mongoQuery.criteria.name &&  mongoQuery.criteria.country && !mongoQuery.criteria.position && !mongoQuery.criteria.birthdate ){
               const players = await PlayersModel.find({ $and: [
                 {name: mongoQuery.criteria.name},
                 {country: mongoQuery.criteria.country},
                ]}
-               )
+               ).populate({path:"club", select: "name country"})
               res.send(players)
             } else  if(mongoQuery.criteria.name &&  mongoQuery.criteria.birthdate &&  !mongoQuery.criteria.position && !mongoQuery.criteria.country ){
               const players = await PlayersModel.find({ $and: [
@@ -134,28 +134,28 @@ playersRouter.get("/", JWTAuthMiddleware, async (req, res, next) => {
                 {birthdate: mongoQuery.criteria.birthdate},
                 
                ]}
-               )
+               ).populate({path:"club", select: "name country"})
               res.send(players)
             } else  if( mongoQuery.criteria.position && mongoQuery.criteria.country &&  !mongoQuery.criteria.name && !mongoQuery.criteria.birthdate){
               const players = await PlayersModel.find({ $and: [
                 {position: mongoQuery.criteria.position},
                 {country: mongoQuery.criteria.country},
                ]}
-               )
+               ).populate({path:"club", select: "name country"})
               res.send(players)
             } else  if( mongoQuery.criteria.position && mongoQuery.criteria.birthdate &&  !mongoQuery.criteria.name && !mongoQuery.criteria.country ){
               const players = await PlayersModel.find({ $and: [
                 {position: mongoQuery.criteria.position},
                 {birthdate: mongoQuery.criteria.birthdate},
                ]}
-               )
+               ).populate({path:"club", select: "name country"})
               res.send(players)
             } else  if( mongoQuery.criteria.birthdate && mongoQuery.criteria.country &&  !mongoQuery.criteria.position && !mongoQuery.criteria.name ){
               const players = await PlayersModel.find({ $and: [
                 {birthdate: mongoQuery.criteria.birthdate},
                 {country: mongoQuery.criteria.country},
                ]}
-               )
+               ).populate({path:"club", select: "name country"})
               res.send(players)
             } else  if( mongoQuery.criteria.birthdate && mongoQuery.criteria.country &&  mongoQuery.criteria.position && !mongoQuery.criteria.name ){
               const players = await PlayersModel.find({ $and: [
@@ -163,7 +163,7 @@ playersRouter.get("/", JWTAuthMiddleware, async (req, res, next) => {
                 {country: mongoQuery.criteria.country},
                 {position: mongoQuery.criteria.position},
                ]}
-               )
+               ).populate({path:"club", select: "name country"})
               res.send(players)
             } else  if( mongoQuery.criteria.birthdate && mongoQuery.criteria.country &&  !mongoQuery.criteria.position && mongoQuery.criteria.name ){
               const players = await PlayersModel.find({ $and: [
@@ -171,7 +171,7 @@ playersRouter.get("/", JWTAuthMiddleware, async (req, res, next) => {
                 {country: mongoQuery.criteria.country},
                 {name: mongoQuery.criteria.name},
                ]}
-               )
+               ).populate({path:"club", select: "name country"})
               res.send(players)
             } else  if( mongoQuery.criteria.birthdate && !mongoQuery.criteria.country &&  mongoQuery.criteria.position && mongoQuery.criteria.name ){
               const players = await PlayersModel.find({ $and: [
@@ -179,7 +179,7 @@ playersRouter.get("/", JWTAuthMiddleware, async (req, res, next) => {
                 {position: mongoQuery.criteria.position},
                 {name: mongoQuery.criteria.name},
                ]}
-               )
+               ).populate({path:"club", select: "name country"})
               res.send(players)
             } else  if( !mongoQuery.criteria.birthdate && mongoQuery.criteria.country &&  mongoQuery.criteria.position && mongoQuery.criteria.name ){
               const players = await PlayersModel.find({ $and: [
@@ -187,7 +187,7 @@ playersRouter.get("/", JWTAuthMiddleware, async (req, res, next) => {
                 {position: mongoQuery.criteria.position},
                 {name: mongoQuery.criteria.name},
                ]}
-               )
+               ).populate({path:"club", select: "name country"})
               res.send(players)
             }
     } catch (error) {
