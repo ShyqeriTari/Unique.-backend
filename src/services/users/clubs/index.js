@@ -114,6 +114,15 @@ clubsRouter.get("/", JWTAuthMiddleware, async (req, res, next) => {
     }
   })
 
+  clubsRouter.get("/all", JWTAuthMiddleware, async (req, res, next) => {
+    try {
+      const clubs = await ClubsModel.find()
+      res.send(clubs)
+    } catch (error) {
+      next(error)
+    }
+  })
+
 clubsRouter.get("/me", JWTAuthMiddleware, async (req, res, next) => {
     try {
       const club = await ClubsModel.findById(req.user._id).populate({path:"players", select: "-password -email", populate: {path: "club"}})

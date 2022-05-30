@@ -83,12 +83,121 @@ playersRouter.post("/register", async (req, res, next) => {
 playersRouter.get("/", JWTAuthMiddleware, async (req, res, next) => {
     try {
       const mongoQuery = q2m(req.query);
-      const players = await PlayersModel.find({ $or:[
-        { name:  {$regex: mongoQuery.criteria.name, $options: "ig"}},
-         { country: {$regex: mongoQuery.criteria.country|"", $options: "ig"}},
-        { club:mongoQuery.criteria.club}
-       
-       ]})
+      if(mongoQuery.criteria.name &&  mongoQuery.criteria.position && mongoQuery.criteria.country && mongoQuery.criteria.birthdate){
+      const players = await PlayersModel.find({ $and: [
+        {name: mongoQuery.criteria.name},
+        {country: mongoQuery.criteria.country},
+        {position: mongoQuery.criteria.position},
+        {birthdate: mongoQuery.criteria.birthdate},
+        
+       ]}
+       )
+      res.send(players)
+    } else if(!mongoQuery.criteria.position && !mongoQuery.criteria.country && !mongoQuery.criteria.birthdate && mongoQuery.criteria.name){
+      const players = await PlayersModel.find(
+        {name: mongoQuery.criteria.name},
+       )
+      res.send(players)
+      } else if( !mongoQuery.criteria.position && !mongoQuery.criteria.name && !mongoQuery.criteria.birthdate && mongoQuery.criteria.country){
+        const players = await PlayersModel.find(
+          {country: mongoQuery.criteria.country},
+         )
+        res.send(players)
+        } else if(!mongoQuery.criteria.name && !mongoQuery.criteria.country && !mongoQuery.criteria.birthdate && mongoQuery.criteria.position){
+          const players = await PlayersModel.find(
+            {position: mongoQuery.criteria.position},
+           )
+          res.send(players)
+          } else if(!mongoQuery.criteria.position && !mongoQuery.criteria.country && !mongoQuery.criteria.name &&mongoQuery.criteria.birthdate){
+            const players = await PlayersModel.find(
+              {birthdate: mongoQuery.criteria.birthdate},
+             )
+            res.send(players)
+            } else  if(mongoQuery.criteria.name &&  mongoQuery.criteria.position && !mongoQuery.criteria.country && !mongoQuery.criteria.birthdate){
+              const players = await PlayersModel.find({ $and: [
+                {name: mongoQuery.criteria.name},
+                {position: mongoQuery.criteria.position},
+                
+               ]}
+               )
+              res.send(players)
+            } else  if(mongoQuery.criteria.name &&  mongoQuery.criteria.country && !mongoQuery.criteria.position && !mongoQuery.criteria.birthdate ){
+              const players = await PlayersModel.find({ $and: [
+                {name: mongoQuery.criteria.name},
+                {country: mongoQuery.criteria.country},
+               ]}
+               )
+              res.send(players)
+            } else  if(mongoQuery.criteria.name &&  mongoQuery.criteria.birthdate &&  !mongoQuery.criteria.position && !mongoQuery.criteria.country ){
+              const players = await PlayersModel.find({ $and: [
+                {name: mongoQuery.criteria.name},
+                {birthdate: mongoQuery.criteria.birthdate},
+                
+               ]}
+               )
+              res.send(players)
+            } else  if( mongoQuery.criteria.position && mongoQuery.criteria.country &&  !mongoQuery.criteria.name && !mongoQuery.criteria.birthdate){
+              const players = await PlayersModel.find({ $and: [
+                {position: mongoQuery.criteria.position},
+                {country: mongoQuery.criteria.country},
+               ]}
+               )
+              res.send(players)
+            } else  if( mongoQuery.criteria.position && mongoQuery.criteria.birthdate &&  !mongoQuery.criteria.name && !mongoQuery.criteria.country ){
+              const players = await PlayersModel.find({ $and: [
+                {position: mongoQuery.criteria.position},
+                {birthdate: mongoQuery.criteria.birthdate},
+               ]}
+               )
+              res.send(players)
+            } else  if( mongoQuery.criteria.birthdate && mongoQuery.criteria.country &&  !mongoQuery.criteria.position && !mongoQuery.criteria.name ){
+              const players = await PlayersModel.find({ $and: [
+                {birthdate: mongoQuery.criteria.birthdate},
+                {country: mongoQuery.criteria.country},
+               ]}
+               )
+              res.send(players)
+            } else  if( mongoQuery.criteria.birthdate && mongoQuery.criteria.country &&  mongoQuery.criteria.position && !mongoQuery.criteria.name ){
+              const players = await PlayersModel.find({ $and: [
+                {birthdate: mongoQuery.criteria.birthdate},
+                {country: mongoQuery.criteria.country},
+                {position: mongoQuery.criteria.position},
+               ]}
+               )
+              res.send(players)
+            } else  if( mongoQuery.criteria.birthdate && mongoQuery.criteria.country &&  !mongoQuery.criteria.position && mongoQuery.criteria.name ){
+              const players = await PlayersModel.find({ $and: [
+                {birthdate: mongoQuery.criteria.birthdate},
+                {country: mongoQuery.criteria.country},
+                {name: mongoQuery.criteria.name},
+               ]}
+               )
+              res.send(players)
+            } else  if( mongoQuery.criteria.birthdate && !mongoQuery.criteria.country &&  mongoQuery.criteria.position && mongoQuery.criteria.name ){
+              const players = await PlayersModel.find({ $and: [
+                {birthdate: mongoQuery.criteria.birthdate},
+                {position: mongoQuery.criteria.position},
+                {name: mongoQuery.criteria.name},
+               ]}
+               )
+              res.send(players)
+            } else  if( !mongoQuery.criteria.birthdate && mongoQuery.criteria.country &&  mongoQuery.criteria.position && mongoQuery.criteria.name ){
+              const players = await PlayersModel.find({ $and: [
+                {country: mongoQuery.criteria.country},
+                {position: mongoQuery.criteria.position},
+                {name: mongoQuery.criteria.name},
+               ]}
+               )
+              res.send(players)
+            }
+    } catch (error) {
+      next(error)
+    }
+  })
+
+  playersRouter.get("/all", JWTAuthMiddleware, async (req, res, next) => {
+    try {
+      const players = await PlayersModel.find()
       res.send(players)
     } catch (error) {
       next(error)
