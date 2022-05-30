@@ -70,6 +70,37 @@ clubsRouter.post("/login", async (req, res, next) => {
     }
   });
 
+  clubsRouter.post("/addLike", JWTAuthMiddleware, async (req, res, next) => {
+    try {
+  
+        const updateClub = await ClubsModel.findByIdAndUpdate(
+          req.body.userlike,
+          { $push: { like: req.user._id}}
+      )
+  
+      res.status(200).send()
+    } catch (error) {
+      console.log(error);
+      next(error);
+    }
+  });
+
+  clubsRouter.post("/addDisLike", JWTAuthMiddleware, async (req, res, next) => {
+    try {
+  
+        const updateClub = await ClubsModel.findByIdAndUpdate(
+          req.body.dislike,
+          { $push: { dislike: req.user._id}}
+      )
+  
+      res.status(200).send()
+    } catch (error) {
+      console.log(error);
+      next(error);
+    }
+  });
+
+
 clubsRouter.get("/", JWTAuthMiddleware, async (req, res, next) => {
     try {
       const mongoQuery = q2m(req.query);
@@ -160,6 +191,42 @@ clubsRouter.delete("/me", JWTAuthMiddleware, async (req, res, next) => {
             req.user._id,
 
             { $pull: { players: req.body.player }}
+
+        )
+
+      res.status(204).send()
+
+    } catch (error) {
+      next(error);
+      console.log(error);
+    }
+  });
+
+  clubsRouter.delete("/removeLike", JWTAuthMiddleware, async (req, res, next) => {
+    try {
+
+        const updatePlayers = await ClubsModel.findByIdAndUpdate(
+          req.body.userlike,
+
+            { $pull: { like: req.user._id }}
+
+        )
+
+      res.status(204).send()
+
+    } catch (error) {
+      next(error);
+      console.log(error);
+    }
+  });
+
+  clubsRouter.delete("/removeDisLike", JWTAuthMiddleware, async (req, res, next) => {
+    try {
+
+        const updatePlayers = await ClubsModel.findByIdAndUpdate(
+          req.body.dislike,
+
+            { $pull: { dislike: req.user._id }}
 
         )
 

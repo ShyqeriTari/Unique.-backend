@@ -14,7 +14,9 @@ const PlayerSchema = baseModel.discriminator("Player", new Schema({
     position: {type: String,  enum: ["GK", "LWB", "LB", "CB", "RB", "RWB", "LM", "CM", "CDM", "CAM", "RM", "RW", "LF", "RF", "ST", "CF"]},
     video: {type: String},
     like: [{type: Schema.Types.ObjectId, refPath: "likeType"}],
-    likeType:{type: String, enum: ["Club", "Player", "Fan"] }
+    likeType:{type: String, enum: ["Club", "Player", "Fan"] },
+    dislike: [{type: Schema.Types.ObjectId, refPath: "dislikeType"}],
+    dislikeType:{type: String, enum: ["Club", "Player", "Fan"] }
 }))
 
 export default model("Player")
