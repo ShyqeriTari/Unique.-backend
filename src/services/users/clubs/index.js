@@ -104,24 +104,8 @@ clubsRouter.post("/login", async (req, res, next) => {
 clubsRouter.get("/", JWTAuthMiddleware, async (req, res, next) => {
     try {
       const mongoQuery = q2m(req.query);
-      if(mongoQuery.criteria.name  && mongoQuery.criteria.country ){
-      const clubs = await ClubsModel.find({ $and: [
-        {name: mongoQuery.criteria.name},
-        {country: mongoQuery.criteria.country},
-       ]}
-       )
+      const clubs = await ClubsModel.find(mongoQuery.criteria )
       res.send(clubs)
-    } else if( !mongoQuery.criteria.country  && mongoQuery.criteria.name){
-      const clubs = await ClubsModel.find(
-        {name: mongoQuery.criteria.name},
-       )
-      res.send(clubs)
-      } else if(  !mongoQuery.criteria.name  && mongoQuery.criteria.country){
-        const clubs = await ClubsModel.find(
-          {country: mongoQuery.criteria.country},
-         )
-        res.send(clubs)
-        } 
     } catch (error) {
       next(error)
     }
