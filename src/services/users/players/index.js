@@ -54,7 +54,7 @@ playersRouter.post("/register", async (req, res, next) => {
     try {
   
         const updateClub = await PlayersModel.findByIdAndUpdate(
-          req.body.userlike,
+          req.body.id,
           { $push: { like: req.user._id}}
       )
   
@@ -69,7 +69,7 @@ playersRouter.post("/register", async (req, res, next) => {
     try {
   
         const updateClub = await PlayersModel.findByIdAndUpdate(
-          req.body.dislike,
+          req.body.id,
           { $push: { dislike: req.user._id}}
       )
   

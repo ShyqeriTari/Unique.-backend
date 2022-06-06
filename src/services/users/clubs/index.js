@@ -74,7 +74,7 @@ clubsRouter.post("/login", async (req, res, next) => {
     try {
   
         const updateClub = await ClubsModel.findByIdAndUpdate(
-          req.body.userlike,
+          req.body.id,
           { $push: { like: req.user._id}}
       )
   
@@ -89,7 +89,7 @@ clubsRouter.post("/login", async (req, res, next) => {
     try {
   
         const updateClub = await ClubsModel.findByIdAndUpdate(
-          req.body.dislike,
+          req.body.id,
           { $push: { dislike: req.user._id}}
       )
   
@@ -135,7 +135,7 @@ clubsRouter.get("/me", JWTAuthMiddleware, async (req, res, next) => {
 
 clubsRouter.get("/:id", JWTAuthMiddleware, async (req, res, next) => {
     try {
-      const club = await ClubsModel.findById(req.params.id)
+      const club = await ClubsModel.findById(req.params.id).populate({path:"players"})
       if (club) {
         res.send(club)
       } else {

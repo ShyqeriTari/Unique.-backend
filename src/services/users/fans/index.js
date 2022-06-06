@@ -54,7 +54,7 @@ fansRouter.post("/login", async (req, res, next) => {
   
         const updateFan = await FansModel.findByIdAndUpdate(
           req.user._id ,
-          { $push: { favPlayers: req.body.player }}
+          { $push: { favPlayers: req.body.id }}
       )
   
       res.status(200).send()
@@ -69,7 +69,7 @@ fansRouter.post("/login", async (req, res, next) => {
   
         const updateFan = await FansModel.findByIdAndUpdate(
           req.user._id ,
-          { $push: { favClubs: req.body.club }}
+          { $push: { favClubs: req.body.id }}
       )
   
       res.status(200).send()
