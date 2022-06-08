@@ -41,7 +41,7 @@ playersRouter.post("/register", async (req, res, next) => {
   
         const accessToken = await generateAccessToken({ _id: player._id, role: player.role })
   
-        res.send({ accessToken })
+        res.send({accessToken: accessToken, id: player._id} )
       } else {
         next(createError(401, `Credentials are not ok!`))
       }
@@ -53,7 +53,7 @@ playersRouter.post("/register", async (req, res, next) => {
   playersRouter.post("/addLike", JWTAuthMiddleware, async (req, res, next) => {
     try {
   
-        const updateClub = await PlayersModel.findByIdAndUpdate(
+        const updatePlayer = await PlayersModel.findByIdAndUpdate(
           req.body.id,
           { $push: { like: req.user._id}}
       )
@@ -68,7 +68,7 @@ playersRouter.post("/register", async (req, res, next) => {
   playersRouter.post("/addDisLike", JWTAuthMiddleware, async (req, res, next) => {
     try {
   
-        const updateClub = await PlayersModel.findByIdAndUpdate(
+        const updatePlayer = await PlayersModel.findByIdAndUpdate(
           req.body.id,
           { $push: { dislike: req.user._id}}
       )
@@ -181,7 +181,7 @@ playersRouter.get("/", JWTAuthMiddleware, async (req, res, next) => {
     try {
 
         const updatePlayers = await PlayersModel.findByIdAndUpdate(
-          req.body.userlike,
+          req.body.id,
 
             { $pull: { like: req.user._id }}
 
@@ -199,7 +199,7 @@ playersRouter.get("/", JWTAuthMiddleware, async (req, res, next) => {
     try {
 
         const updatePlayers = await PlayersModel.findByIdAndUpdate(
-          req.body.dislike,
+          req.body.id,
 
             { $pull: { dislike: req.user._id }}
 

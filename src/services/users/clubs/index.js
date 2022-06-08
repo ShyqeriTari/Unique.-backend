@@ -41,7 +41,7 @@ clubsRouter.post("/login", async (req, res, next) => {
   
         const accessToken = await generateAccessToken({ _id: club._id, role: club.role })
   
-        res.send({ accessToken })
+        res.send({accessToken: accessToken, id: club._id} )
       } else {
         next(createError(401, `Credentials are not ok!`))
       }
@@ -212,7 +212,7 @@ clubsRouter.delete("/me", JWTAuthMiddleware, async (req, res, next) => {
     try {
 
         const updatePlayers = await ClubsModel.findByIdAndUpdate(
-          req.body.userlike,
+          req.body.id,
 
             { $pull: { like: req.user._id }}
 
@@ -230,7 +230,7 @@ clubsRouter.delete("/me", JWTAuthMiddleware, async (req, res, next) => {
     try {
 
         const updatePlayers = await ClubsModel.findByIdAndUpdate(
-          req.body.dislike,
+          req.body.id,
 
             { $pull: { dislike: req.user._id }}
 

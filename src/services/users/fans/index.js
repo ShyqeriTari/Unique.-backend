@@ -40,7 +40,7 @@ fansRouter.post("/login", async (req, res, next) => {
   
         const accessToken = await generateAccessToken({ _id: fan._id, role: fan.role })
   
-        res.send({ accessToken })
+        res.send({accessToken: accessToken, id: fan._id} )
       } else {
         next(createError(401, `Credentials are not ok!`))
       }
@@ -82,11 +82,24 @@ fansRouter.post("/login", async (req, res, next) => {
 
 fansRouter.get("/me", JWTAuthMiddleware, async (req, res, next) => {
     try {
-      const fan = await FansModel.findById(req.user._id).populate({path: "favPlayers"})
+      const fan = await FansModel.findById(req.user._id).populate({path: "favPlayers"}).populate({path: "favClubs"})
       if (fan) {
         res.send(fan)
       } else {
         next(createError(401, `User with id ${req.user._id} not found!`))
+      }
+    } catch (error) {
+      next(error)
+    }
+  })
+
+  fansRouter.get("/:id", JWTAuthMiddleware, async (req, res, next) => {
+    try {
+      const fan = await FansModel.findById(req.params.id)
+      if (fan) {
+        res.send(fan)
+      } else {
+        next(createError(404, `Fan with id ${req.params.id} not found!`))
       }
     } catch (error) {
       next(error)
@@ -144,7 +157,7 @@ fansRouter.delete("/me", JWTAuthMiddleware, async (req, res, next) => {
         const updateFan = await FansModel.findByIdAndUpdate(
             req.user._id,
 
-            { $pull: { favPlayers: req.body.player }}
+            { $pull: { favPlayers: req.body.id }}
 
         )
 
@@ -162,7 +175,7 @@ fansRouter.delete("/me", JWTAuthMiddleware, async (req, res, next) => {
         const updateFan = await FansModel.findByIdAndUpdate(
             req.user._id,
 
-            { $pull: { favClubs: req.body.club }}
+            { $pull: { favClubs: req.body.id }}
 
         )
 
