@@ -129,18 +129,21 @@ playersRouter.get("/", JWTAuthMiddleware, async (req, res, next) => {
   playersRouter.put("/me", JWTAuthMiddleware, async (req, res, next) => {
     try {
 
-      const updatedPlayer = await PlayersModel.findByIdAndUpdate(req.user._id, req.body, { new: true, runValidators: true })
-
-      if(updatedPlayer){
+      const player = await PlayersModel.findById(req.user._id)
+      
         if(req.body.club){
+          const removeFromPrev = await ClubsModel.findByIdAndUpdate(player.club.toString(),
+          { $pull: { players: req.user._id }})
+          const updatedPlayer = await PlayersModel.findByIdAndUpdate(req.user._id, req.body, { new: true, runValidators: true })
           const updateClub = await ClubsModel.findByIdAndUpdate(
             req.body.club ,
             { $push: { players: req.user._id }}
-        )
-        }
-
+        )} else if (!req.body.club){ 
+          const updatedPlayer = await PlayersModel.findByIdAndUpdate(req.user._id, req.body, { new: true, runValidators: true })
+      
         res.send(updatedPlayer)
-    }else{
+      
+      }else{
         next(createError(404, `Player with id ${req.user._id} not found!`))
     }
     } catch (error) {
