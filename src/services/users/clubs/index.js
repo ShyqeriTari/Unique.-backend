@@ -50,12 +50,12 @@ clubsRouter.post("/login", async (req, res, next) => {
     }
   })
 
-  clubsRouter.post("/addplayer", JWTAuthMiddleware, async (req, res, next) => {
+  clubsRouter.post("/addPlayer", JWTAuthMiddleware, async (req, res, next) => {
     try {
   
         const updateClub = await ClubsModel.findByIdAndUpdate(
           req.user._id ,
-          { $push: { players: req.body.player }}
+          { $push: { players: req.body.id }}
       )
   
       const updatePlayer = await PlayersModel.findByIdAndUpdate(
@@ -135,7 +135,7 @@ clubsRouter.get("/me", JWTAuthMiddleware, async (req, res, next) => {
 
 clubsRouter.get("/:id", JWTAuthMiddleware, async (req, res, next) => {
     try {
-      const club = await ClubsModel.findById(req.params.id).populate({path:"players"})
+      const club = await ClubsModel.findById(req.params.id).populate({path:"players", populate: {path: "club"}})
       if (club) {
         res.send(club)
       } else {
@@ -196,7 +196,7 @@ clubsRouter.delete("/me", JWTAuthMiddleware, async (req, res, next) => {
         const updatePlayers = await ClubsModel.findByIdAndUpdate(
             req.user._id,
 
-            { $pull: { players: req.body.player }}
+            { $pull: { players: req.body.id }}
 
         )
 
