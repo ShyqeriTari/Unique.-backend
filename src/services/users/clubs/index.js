@@ -52,18 +52,44 @@ clubsRouter.post("/login", async (req, res, next) => {
 
   clubsRouter.post("/addPlayer", JWTAuthMiddleware, async (req, res, next) => {
     try {
+
+      const player = await PlayersModel.findById(
+        req.body.id
+     )
+
+     if(player.club){
+
+      const oldClub = await ClubsModel.findByIdAndUpdate(
+        player.club.toString() ,
+        { $pull: { players: req.body.id }}
+    )
+    
+          const updateClub = await ClubsModel.findByIdAndUpdate(
+            req.user._id ,
+            { $push: { players: req.body.id }}
+        )
+    
+        const updatePlayer = await PlayersModel.findByIdAndUpdate(
+           req.body.id ,
+           { club: req.user._id }
+        )
+    
+        res.status(200).send()
+
+     } else{
+      const updateClub = await ClubsModel.findByIdAndUpdate(
+        req.user._id ,
+        { $push: { players: req.body.id }}
+    )
+
+    const updatePlayer = await PlayersModel.findByIdAndUpdate(
+       req.body.id ,
+       { club: req.user._id }
+    )
+
+    res.status(200).send()
+     }
   
-        const updateClub = await ClubsModel.findByIdAndUpdate(
-          req.user._id ,
-          { $push: { players: req.body.id }}
-      )
-  
-      const updatePlayer = await PlayersModel.findByIdAndUpdate(
-         req.body.player ,
-         { club: req.user._id }
-      )
-  
-      res.status(200).send()
     } catch (error) {
       console.log(error);
       next(error);

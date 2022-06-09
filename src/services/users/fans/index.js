@@ -82,7 +82,7 @@ fansRouter.post("/login", async (req, res, next) => {
 
 fansRouter.get("/me", JWTAuthMiddleware, async (req, res, next) => {
     try {
-      const fan = await FansModel.findById(req.user._id).populate({path: "favPlayers"}).populate({path: "favClubs"})
+      const fan = await FansModel.findById(req.user._id).populate({path: "favPlayers"}).populate({path: "favClubs"}).populate({path: "club"})
       if (fan) {
         res.send(fan)
       } else {

@@ -115,7 +115,7 @@ playersRouter.get("/", JWTAuthMiddleware, async (req, res, next) => {
 
   playersRouter.get("/:id", JWTAuthMiddleware, async (req, res, next) => {
     try {
-      const player = await PlayersModel.findById(req.params.id)
+      const player = await PlayersModel.findById(req.params.id).populate({path: "club"})
       if (player) {
         res.send(player)
       } else {
