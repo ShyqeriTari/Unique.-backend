@@ -237,7 +237,7 @@ clubsRouter.delete("/me", JWTAuthMiddleware, async (req, res, next) => {
   clubsRouter.delete("/removeLike", JWTAuthMiddleware, async (req, res, next) => {
     try {
 
-        const updatePlayers = await ClubsModel.findByIdAndUpdate(
+        const updateLikes = await ClubsModel.findByIdAndUpdate(
           req.body.id,
 
             { $pull: { like: req.user._id }}
@@ -255,7 +255,7 @@ clubsRouter.delete("/me", JWTAuthMiddleware, async (req, res, next) => {
   clubsRouter.delete("/removeDisLike", JWTAuthMiddleware, async (req, res, next) => {
     try {
 
-        const updatePlayers = await ClubsModel.findByIdAndUpdate(
+        const updateDislikes = await ClubsModel.findByIdAndUpdate(
           req.body.id,
 
             { $pull: { dislike: req.user._id }}

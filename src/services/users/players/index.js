@@ -84,7 +84,8 @@ playersRouter.get("/", JWTAuthMiddleware, async (req, res, next) => {
     try {
       const mongoQuery = q2m(req.query);
 
-      const players = await PlayersModel.find(mongoQuery.criteria).populate({path:"club", select: "name country"})
+      const players = await PlayersModel.find(mongoQuery.criteria ).populate({path:"club", select: "name country"})
+     
       res.send(players)
     } catch (error) {
       next(error)
@@ -93,7 +94,7 @@ playersRouter.get("/", JWTAuthMiddleware, async (req, res, next) => {
 
   playersRouter.get("/all", JWTAuthMiddleware, async (req, res, next) => {
     try {
-      const players = await PlayersModel.find()
+      const players = await PlayersModel.find().populate({path:"club", select: "name country"})
       res.send(players)
     } catch (error) {
       next(error)
