@@ -226,6 +226,11 @@ clubsRouter.delete("/me", JWTAuthMiddleware, async (req, res, next) => {
 
         )
 
+        const updatePlayer = await PlayersModel.findByIdAndUpdate(
+          req.body.id ,
+          { club: null }
+       )
+
       res.status(204).send()
 
     } catch (error) {
