@@ -139,7 +139,9 @@ playersRouter.get("/", JWTAuthMiddleware, async (req, res, next) => {
           const updateClub = await ClubsModel.findByIdAndUpdate(
             req.body.club ,
             { $push: { players: req.user._id }}
-        )} else if (!req.body.club){ 
+        )
+        res.send(updatedPlayer)
+      } else if (!req.body.club){ 
           const updatedPlayer = await PlayersModel.findByIdAndUpdate(req.user._id, req.body, { new: true, runValidators: true })
       
         res.send(updatedPlayer)
